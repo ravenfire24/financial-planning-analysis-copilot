@@ -34,10 +34,10 @@ https://financial-planning-analysis-copilot-6wp5ttqdoqnknepuwttszg.streamlit.app
 ## 📁 Upload Your Data
 Upload the required CSV files to begin using the FP&A Copilot:
 
-* `actuals.csv`
-* `budget.csv`
-* `fx.csv`
-* `cash.csv`
+* `actuals.csv`- This file contains real financial results.
+* `budget.csv` - This file contains forecasted or planned numbers.
+* `fx.csv`- This file contains conversion rates between currencies.
+* `cash.csv`- This file tracks how much cash the company has over time.
 
 Once all files are uploaded, you can start asking financial questions in natural language.
 
