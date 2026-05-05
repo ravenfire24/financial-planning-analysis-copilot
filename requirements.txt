@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+plotly
+faiss-cpu
+langchain
+langgraph
+llama-index
+transformers
+accelerate
+sentence-transformers
+llama-index-vector-stores-faiss
+langchain-community
+pytest
