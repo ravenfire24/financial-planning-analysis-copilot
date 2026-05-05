@@ -29,7 +29,7 @@ Examples:
 
 ## 🎥 Demo
 
-
+https://financial-planning-analysis-copilot-6wp5ttqdoqnknepuwttszg.streamlit.app/
 
 ## 📁 Upload Your Data
 Upload the required CSV files to begin using the FP&A Copilot:
