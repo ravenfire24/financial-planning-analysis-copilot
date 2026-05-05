@@ -1,4 +1,4 @@
-# Financial Planning & Analysis Copilot (AI Finance Agent)
+# Financial Planning & Analysis Copilot (AI FP&A Agent)
 
 An AI-powered FP&A assistant that allows a CFO to ask natural language questions about financial performance and receive **accurate metrics + charts** in seconds.
 
