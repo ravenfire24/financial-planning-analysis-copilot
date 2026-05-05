@@ -110,7 +110,7 @@ python -m streamlit run app.py
 * **Indexing:** LlamaIndex
 * **Visualization:** Plotly
 
-
+ ![alt text](https://github.com/ravenfire24/financial-planning-analysis-copilot/blob/main/page.JPG)
 
 
 
