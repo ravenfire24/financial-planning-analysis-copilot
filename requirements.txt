@@ -12,3 +12,4 @@ sentence-transformers
 llama-index-vector-stores-faiss
 langchain-community
 pytest
+huggingface_hub
