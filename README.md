@@ -30,6 +30,16 @@ Examples:
 ## 🎥 Demo
 
 
+## 📁 Upload Your Data
+Upload the required CSV files to begin using the FP&A Copilot:
+
+* `actuals.csv`
+* `budget.csv`
+* `fx.csv`
+* `cash.csv`
+
+Once all files are uploaded, you can start asking financial questions in natural language.
+
 ---
 
 ## 📁 Project Structure

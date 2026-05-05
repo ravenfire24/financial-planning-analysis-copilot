@@ -3,10 +3,50 @@ import plotly.express as px
 from agent.graph import graph
 from utils.charts import *
 from agent.tools import *
+import streamlit as st
+import plotly.express as px
+from agent.graph import graph
+from utils.charts import *
+from agent.tools import *
+import os
 
 st.title(" Financial Planning & Analysis Copilot")
 
-query = st.text_input("Ask a finance question")
+st.subheader("Upload your financial data")
+
+uploaded_actuals = st.file_uploader("Upload actuals.csv", type="csv")
+uploaded_budget = st.file_uploader("Upload budget.csv", type="csv")
+uploaded_fx = st.file_uploader("Upload fx.csv", type="csv")
+uploaded_cash = st.file_uploader("Upload cash.csv", type="csv")
+
+# upload the csv files
+os.makedirs("data", exist_ok=True)
+
+files_uploaded = all([uploaded_actuals, uploaded_budget, uploaded_fx, uploaded_cash])
+
+if files_uploaded:
+    with open("data/actuals.csv", "wb") as f:
+        f.write(uploaded_actuals.getbuffer())
+
+    with open("data/budget.csv", "wb") as f:
+        f.write(uploaded_budget.getbuffer())
+
+    with open("data/fx.csv", "wb") as f:
+        f.write(uploaded_fx.getbuffer())
+
+    with open("data/cash.csv", "wb") as f:
+        f.write(uploaded_cash.getbuffer())
+
+    st.success("✅ Files uploaded successfully!")
+else:
+    st.warning("⚠️ Please upload all required CSV files.")
+
+st.title(" Financial Planning & Analysis Copilot")
+
+query = None
+
+if files_uploaded:
+    query = st.text_input("Ask a finance question")
 
 if query:
     print("USER INPUT:", query)
