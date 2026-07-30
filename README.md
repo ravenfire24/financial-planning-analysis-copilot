@@ -9,15 +9,15 @@ Built using **LangGraph, LangChain, LlamaIndex, Hugging Face, FAISS, and Streaml
 
 ##  Features
 
-* 💬 Ask finance questions in plain English
-* 📊 Automatic calculation of key FP&A metrics
-* 📈 Interactive charts (Plotly)
-* 🧠 Agent-based workflow (LangGraph)
-* 📂 Works directly on structured CSV financial data
+*  Ask finance questions in plain English
+*  Automatic calculation of key FP&A metrics
+*  Interactive charts (Plotly)
+*  Agent-based workflow (LangGraph)
+*  Works directly on structured CSV financial data
 
 ---
 
-## 🧠 Supported Questions
+##  Supported Questions
 
 Examples:
 
@@ -32,7 +32,7 @@ Examples:
 
 https://financial-planning-analysis-copilot-6wp5ttqdoqnknepuwttszg.streamlit.app/
 
-## 📁 Upload Your Data
+##  Upload Your Data
 Upload the required CSV files to begin using the FP&A Copilot:
 
 * `actuals.csv`- This file contains real financial results.
@@ -44,7 +44,7 @@ Once all files are uploaded, you can start asking financial questions in natural
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 fpna-agent/
@@ -78,7 +78,7 @@ fpna-agent/
 
 ---
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 
 ### 1. Clone repo
 
