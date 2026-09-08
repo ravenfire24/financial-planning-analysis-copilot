@@ -186,7 +186,7 @@ export function FpnaDashboard() {
               Financial Data
             </h2>
             <p className="panel-note">
-              uplaod the csvs files
+              Upload the CSVs files
             </p>
           </div>
           <div className="panel-body">
