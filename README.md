@@ -3,93 +3,109 @@ An AI-powered Financial Planning & Analysis (FP&A) assistant designed to help CF
 
 This project combines full-stack development, data analytics, AI agents, and financial reporting into an interactive Streamlit application capable of transforming raw CSV financial data into board-ready insights and visualizations.
 
-## Live Demo
-
-Production app:
+## Live App
 
 ```text
 https://financial-planning-analysis-copilot.vercel.app
 ```
 
-## Current Version
+## Overview
 
-The deployed version is a Vercel-ready rebuild of the original FP&A assistant. It uses a Next.js interface, browser-side CSV parsing, deterministic finance calculations, and interactive charts.
+This repository now includes a Vercel-ready Next.js version of the FP&A Copilot. The deployed app lets users upload financial CSV files, ask business questions, and generate finance answers with charts and detail tables.
 
-This version is designed to stay free for a student project:
+The current production app is designed for a student portfolio and avoids paid infrastructure. It runs the analysis in the browser, so it does not require a database, object storage, or paid AI API key.
 
-- No paid AI API key required
-- No paid database required
-- No file storage service required
-- Uploaded CSV files stay in browser memory
-- Deploys on the Vercel Hobby plan
+## What The App Does
 
-## Features
+- Uploads `actuals.csv`, `budget.csv`, and `cash.csv`
+- Parses uploaded CSV files in the browser
+- Validates finance rows with Zod
+- Routes natural-language questions by intent
+- Calculates FP&A metrics using TypeScript functions
+- Shows KPI cards, written analysis, charts, and detail tables
+- Deploys as a static Next.js app on Vercel
 
-- Upload financial CSV files
-- Ask finance questions in plain English
-- Calculate revenue vs budget
-- Analyze gross margin trends
-- Break down operating expenses
-- Estimate cash runway
-- Display charts and detail tables
-- Run as a production-style Next.js app on Vercel
+## Supported Analysis
 
-## Supported Questions
+The current app can answer questions about:
 
-Example questions the app can handle:
+- Revenue vs budget
+- Gross margin trend
+- Opex breakdown
+- Cash runway
+- Executive summary metrics
 
-- What was June 2025 revenue vs budget?
-- Show gross margin trend for the last 3 months.
-- Break down opex by category for June.
-- What is our current cash runway?
+## Example Questions
 
-## CSV Files
+```text
+What was June 2025 revenue vs budget?
+Show gross margin trend for the last 3 months.
+Break down opex by category for June.
+What is our current cash runway?
+```
 
-The app expects these files:
+## Data Format
 
-| File | Purpose |
-| --- | --- |
-| `actuals.csv` | Actual monthly financial results |
-| `budget.csv` | Budget or forecast values |
-| `cash.csv` | Cash balance and net burn data |
+### `actuals.csv`
 
-The original Python prototype also includes `fx.csv` for currency conversion experiments.
+```csv
+month,entity,account,category,amount,currency
+2025-06,US,Revenue,Revenue,140000,USD
+2025-06,US,COGS,COGS,45000,USD
+2025-06,US,Marketing,Opex,17000,USD
+```
 
-## Tech Stack
+### `budget.csv`
 
-### Deployed Vercel App
+```csv
+month,entity,account,category,amount,currency
+2025-06,US,Revenue,Revenue,145000,USD
+2025-06,US,COGS,COGS,42000,USD
+2025-06,US,Marketing,Opex,16000,USD
+```
 
-- Next.js
+### `cash.csv`
+
+```csv
+month,cash,net_burn
+2025-04,500000,40000
+2025-05,460000,42000
+2025-06,420000,45000
+```
+
+## Current Tech Stack
+
+- Next.js 16
+- React 19
 - TypeScript
-- React
 - Recharts
 - PapaParse
 - Zod
 - Lucide React
 - Vercel
 
-### Original Python Prototype
+## Original Python Prototype
 
-- Python
-- Streamlit
-- Pandas
-- NumPy
-- Plotly
-- LangGraph
-- LangChain
-- Hugging Face Transformers
-- FAISS
-- LlamaIndex
-- Pytest
+The repo still includes the original Python/Streamlit prototype for reference:
+
+- `app.py`
+- `agent/`
+- `data/`
+- `index/`
+- `utils/`
+- `tests/`
+- `requirements.txt`
+
+That prototype uses Streamlit, Pandas, Plotly, LangGraph, LangChain, Hugging Face Transformers, FAISS, and LlamaIndex.
 
 ## Project Structure
 
 ```text
 financial-planning-analysis-copilot/
   app/
-    page.tsx
-    layout.tsx
     globals.css
+    layout.tsx
+    page.tsx
   components/
     fpna-dashboard.tsx
   lib/
@@ -103,15 +119,28 @@ financial-planning-analysis-copilot/
     tools.py
   data/
     loader.py
+  index/
+    vector_store.py
   utils/
-    metrics.py
     charts.py
+    metrics.py
   tests/
     test_metrics.py
   app.py
   package.json
   requirements.txt
 ```
+
+## Key Files
+
+| File | Purpose |
+| --- | --- |
+| `components/fpna-dashboard.tsx` | Main interactive dashboard UI |
+| `lib/finance.ts` | Finance routing, calculations, formatting, and validation |
+| `lib/sample-data.ts` | Demo CSV data used by the app |
+| `app/globals.css` | App styling and responsive layout |
+| `public/finance-hero.png` | Homepage background image |
+| `package.json` | Next.js scripts and dependencies |
 
 ## Run Locally
 
@@ -121,7 +150,7 @@ Install dependencies:
 npm install
 ```
 
-Start the development server:
+Start the app:
 
 ```bash
 npm run dev
@@ -141,20 +170,30 @@ npm run typecheck
 npm run build
 ```
 
-## Deployment
+## Deploy To Vercel
 
-The app is deployed on Vercel:
+The project is already deployed at:
 
 ```text
 https://financial-planning-analysis-copilot.vercel.app
 ```
 
-To deploy from the command line:
+To deploy manually:
 
 ```bash
 npx vercel deploy --prod
 ```
 
-## Notes
+## Cost
 
-This project keeps the cost low by avoiding paid backend services in the deployed version. The finance analysis runs in the browser, which makes the app easier to deploy, easier to demo, and suitable for a personal student portfolio.
+The deployed version is built to run with no required paid services:
+
+- Vercel Hobby hosting
+- Browser-side CSV processing
+- No database
+- No server-side file storage
+- No required LLM API calls
+
+## Security Notes
+
+Do not commit `.env` files, API keys, access tokens, database URLs, or private financial data. Uploaded CSV files are processed in the browser in the current Vercel version.
