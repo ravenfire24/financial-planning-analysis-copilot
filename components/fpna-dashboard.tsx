@@ -12,6 +12,7 @@ import {
   Send,
   Upload,
   WalletCards,
+  X,
 } from "lucide-react";
 import Papa from "papaparse";
 import {
@@ -76,6 +77,7 @@ export function FpnaDashboard() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [status, setStatus] = useState<UploadStatus>(emptyStatus);
+  const [inputVersions, setInputVersions] = useState<UploadStatus>(emptyStatus);
   const [isParsing, setIsParsing] = useState(false);
 
   const summary = useMemo(() => {
@@ -129,8 +131,26 @@ export function FpnaDashboard() {
       ...current,
       [key]: `${file.name}`,
     }));
+    setData(null);
     setResult(null);
     setIsParsing(false);
+  }
+
+  function removeUploadedFile(key: FileKey) {
+    setPendingData((current) => ({
+      ...current,
+      [key]: [],
+    }));
+    setStatus((current) => ({
+      ...current,
+      [key]: "",
+    }));
+    setInputVersions((current) => ({
+      ...current,
+      [key]: String(Number(current[key] || "0") + 1),
+    }));
+    setData(null);
+    setResult(null);
   }
 
   function askQuestion(nextQuery = query) {
@@ -173,21 +193,27 @@ export function FpnaDashboard() {
             <div className="upload-stack">
               <FileUpload
                 id="actuals"
+                inputVersion={inputVersions.actuals}
                 label="Actuals CSV"
                 status={status.actuals}
                 onChange={(file) => handleFileUpload("actuals", file)}
+                onRemove={() => removeUploadedFile("actuals")}
               />
               <FileUpload
                 id="budget"
+                inputVersion={inputVersions.budget}
                 label="Budget CSV"
                 status={status.budget}
                 onChange={(file) => handleFileUpload("budget", file)}
+                onRemove={() => removeUploadedFile("budget")}
               />
               <FileUpload
                 id="cash"
+                inputVersion={inputVersions.cash}
                 label="Cash CSV"
                 status={status.cash}
                 onChange={(file) => handleFileUpload("cash", file)}
+                onRemove={() => removeUploadedFile("cash")}
               />
               <button className="load-button" disabled={!uploadReady || isParsing} type="button" onClick={loadUploadedData}>
                 {isParsing ? <Loader2 className="spin" size={16} /> : <FileSpreadsheet size={16} />}
@@ -336,30 +362,42 @@ export function FpnaDashboard() {
 
 function FileUpload({
   id,
+  inputVersion,
   label,
   onChange,
+  onRemove,
   status,
 }: {
   id: string;
+  inputVersion: string;
   label: string;
   onChange: (file: File | null) => void;
+  onRemove: () => void;
   status: string;
 }) {
   return (
-    <label className="file-row" htmlFor={id}>
-      <span className="file-label">
-        <span>{label}</span>
-        {status ? <CheckCircle2 className="positive" size={15} /> : null}
-      </span>
+    <div className="file-row">
+      <div className="file-heading">
+        <label className="file-label" htmlFor={id}>
+          {label}
+        </label>
+        {status ? (
+          <button aria-label={`Remove ${label}`} className="remove-file-button" onClick={onRemove} title={`Remove ${label}`} type="button">
+            <X size={14} />
+            Remove
+          </button>
+        ) : null}
+      </div>
       <input
         accept=".csv,text/csv"
         className="file-input"
         id={id}
+        key={`${id}-${inputVersion}`}
         onChange={(event) => onChange(event.target.files?.[0] ?? null)}
         type="file"
       />
       {status ? <span className="panel-note">{status}</span> : null}
-    </label>
+    </div>
   );
 }
 

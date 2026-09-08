@@ -140,13 +140,16 @@ button {
   padding: 12px;
 }
 
-.file-label {
+.file-heading {
   align-items: center;
   display: flex;
-  font-size: 13px;
-  font-weight: 700;
   gap: 8px;
   justify-content: space-between;
+}
+
+.file-label {
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .file-input {
@@ -155,6 +158,26 @@ button {
   color: var(--muted);
   max-width: 100%;
   padding: 10px;
+}
+
+.remove-file-button {
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--negative);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  min-height: 30px;
+  padding: 6px 8px;
+}
+
+.remove-file-button:hover {
+  background: #fff3f1;
+  border-color: rgba(192, 54, 44, 0.35);
 }
 
 .load-button,
