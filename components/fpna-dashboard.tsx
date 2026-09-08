@@ -160,7 +160,7 @@ export function FpnaDashboard() {
               Financial Data
             </h2>
             <p className="panel-note">
-              Upload CSVs or use the built-in sample data. Files stay in the browser for the free version.
+              Upload CSVs. Files stay in the browser for the free version.
             </p>
           </div>
           <div className="panel-body">
