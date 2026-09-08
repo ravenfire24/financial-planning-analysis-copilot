@@ -3,13 +3,7 @@ An AI-powered Financial Planning & Analysis (FP&A) assistant designed to help CF
 
 This project combines full-stack development, data analytics, AI agents, and financial reporting into an interactive Streamlit application capable of transforming raw CSV financial data into board-ready insights and visualizations.
 
-## Live App
-
-```text
-https://financial-planning-analysis-copilot.vercel.app
-```
-
-## Screenshot
+Live App:  https://financial-planning-analysis-copilot.vercel.app
 
 ![alt text](page.JPG)
 
@@ -44,9 +38,9 @@ What is our current cash runway?
 
 ## Data Format
 
-### `actuals.csv`
-### `budget.csv`
-### `cash.csv`
+`actuals.csv`
+`budget.csv`
+`cash.csv`
 
 
 
