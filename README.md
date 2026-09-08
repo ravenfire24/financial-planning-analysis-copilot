@@ -1,7 +1,7 @@
 # Financial Planning & Analysis Copilot (AI FP&A Agent)
 An AI-powered Financial Planning & Analysis (FP&A) assistant designed to help CFOs (Chief Financial Officer) and finance teams quickly analyze business performance using natural language questions.
 
-This project combines full-stack development, data analytics, AI agents, and financial reporting into an interactive Streamlit application capable of transforming raw CSV financial data into board-ready insights and visualizations.
+This project combines full-stack development, data analytics, AI agents, and financial reporting into an interactive vercel application capable of transforming raw CSV financial data into board-ready insights and visualizations.
 
 Live App:  https://financial-planning-analysis-copilot.vercel.app
 
