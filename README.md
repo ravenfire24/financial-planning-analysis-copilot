@@ -9,11 +9,9 @@ This project combines full-stack development, data analytics, AI agents, and fin
 https://financial-planning-analysis-copilot.vercel.app
 ```
 
-## Overview
+## Screenshot
 
-This repository now includes a Vercel-ready Next.js version of the FP&A Copilot. The deployed app lets users upload financial CSV files, ask business questions, and generate finance answers with charts and detail tables.
-
-The current production app is designed for a student portfolio and avoids paid infrastructure. It runs the analysis in the browser, so it does not require a database, object storage, or paid AI API key.
+![alt text](page.JPG)
 
 ## What The App Does
 
@@ -47,31 +45,10 @@ What is our current cash runway?
 ## Data Format
 
 ### `actuals.csv`
-
-```csv
-month,entity,account,category,amount,currency
-2025-06,US,Revenue,Revenue,140000,USD
-2025-06,US,COGS,COGS,45000,USD
-2025-06,US,Marketing,Opex,17000,USD
-```
-
 ### `budget.csv`
-
-```csv
-month,entity,account,category,amount,currency
-2025-06,US,Revenue,Revenue,145000,USD
-2025-06,US,COGS,COGS,42000,USD
-2025-06,US,Marketing,Opex,16000,USD
-```
-
 ### `cash.csv`
 
-```csv
-month,cash,net_burn
-2025-04,500000,40000
-2025-05,460000,42000
-2025-06,420000,45000
-```
+
 
 ## Current Tech Stack
 
@@ -83,20 +60,6 @@ month,cash,net_burn
 - Zod
 - Lucide React
 - Vercel
-
-## Original Python Prototype
-
-The repo still includes the original Python/Streamlit prototype for reference:
-
-- `app.py`
-- `agent/`
-- `data/`
-- `index/`
-- `utils/`
-- `tests/`
-- `requirements.txt`
-
-That prototype uses Streamlit, Pandas, Plotly, LangGraph, LangChain, Hugging Face Transformers, FAISS, and LlamaIndex.
 
 ## Project Structure
 
@@ -162,38 +125,4 @@ Open:
 http://localhost:3000
 ```
 
-## Quality Checks
 
-```bash
-npm run lint
-npm run typecheck
-npm run build
-```
-
-## Deploy To Vercel
-
-The project is already deployed at:
-
-```text
-https://financial-planning-analysis-copilot.vercel.app
-```
-
-To deploy manually:
-
-```bash
-npx vercel deploy --prod
-```
-
-## Cost
-
-The deployed version is built to run with no required paid services:
-
-- Vercel Hobby hosting
-- Browser-side CSV processing
-- No database
-- No server-side file storage
-- No required LLM API calls
-
-## Security Notes
-
-Do not commit `.env` files, API keys, access tokens, database URLs, or private financial data. Uploaded CSV files are processed in the browser in the current Vercel version.
