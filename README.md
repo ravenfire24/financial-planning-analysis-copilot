@@ -44,7 +44,7 @@ What is our current cash runway?
 
 
 
-## Current Tech Stack
+## Tech Stack
 
 - Next.js 16
 - React 19
