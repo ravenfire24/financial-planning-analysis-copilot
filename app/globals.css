@@ -157,7 +157,7 @@ button {
   padding: 10px;
 }
 
-.sample-button,
+.load-button,
 .ask-button {
   align-items: center;
   border: 1px solid transparent;
@@ -168,16 +168,16 @@ button {
   justify-content: center;
 }
 
-.sample-button,
+.load-button,
 .ask-button {
   min-height: 42px;
   padding: 10px 14px;
   width: 100%;
 }
 
-.sample-button {
-  background: var(--panel-muted);
-  color: var(--foreground);
+.load-button {
+  background: var(--accent);
+  color: #fff;
 }
 
 .ask-button {
@@ -185,6 +185,7 @@ button {
   color: #fff;
 }
 
+.load-button:disabled,
 .ask-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;

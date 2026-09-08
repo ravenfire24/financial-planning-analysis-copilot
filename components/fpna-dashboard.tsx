@@ -31,7 +31,9 @@ import {
 import { useMemo, useState } from "react";
 import {
   AnalysisResult,
+  CashRow,
   DataSet,
+  FinancialRow,
   analyzeQuestion,
   buildSummary,
   cashRunway,
@@ -43,7 +45,6 @@ import {
   totalOpex,
   totalRevenue,
 } from "@/lib/finance";
-import { sampleActualsCsv, sampleBudgetCsv, sampleCashCsv } from "@/lib/sample-data";
 
 const chartColors = ["#126c6a", "#b84a62", "#c2892f", "#537188", "#7d5a50"];
 
@@ -57,8 +58,21 @@ const emptyStatus: UploadStatus = {
   cash: "",
 };
 
+type PendingDataSet = {
+  actuals: FinancialRow[];
+  budget: FinancialRow[];
+  cash: CashRow[];
+};
+
+const emptyPendingData: PendingDataSet = {
+  actuals: [],
+  budget: [],
+  cash: [],
+};
+
 export function FpnaDashboard() {
   const [data, setData] = useState<DataSet | null>(null);
+  const [pendingData, setPendingData] = useState<PendingDataSet>(emptyPendingData);
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [status, setStatus] = useState<UploadStatus>(emptyStatus);
@@ -79,20 +93,13 @@ export function FpnaDashboard() {
     };
   }, [data]);
 
-  function loadSampleData() {
-    const nextData = {
-      actuals: normalizeFinancialRows(parseCsv(sampleActualsCsv)),
-      budget: normalizeFinancialRows(parseCsv(sampleBudgetCsv)),
-      cash: normalizeCashRows(parseCsv(sampleCashCsv)),
-    };
+  function loadUploadedData() {
+    if (!isReady(pendingData)) {
+      return;
+    }
 
-    setData(nextData);
-    setResult(buildSummary(nextData));
-    setStatus({
-      actuals: "Sample loaded",
-      budget: "Sample loaded",
-      cash: "Sample loaded",
-    });
+    setData(pendingData);
+    setResult(buildSummary(pendingData));
   }
 
   async function handleFileUpload(key: FileKey, file: File | null) {
@@ -104,18 +111,16 @@ export function FpnaDashboard() {
     const text = await file.text();
     const rows = parseCsv(text);
 
-    setData((current) => {
-      const nextData = current ?? { actuals: [], budget: [], cash: [] };
-
+    setPendingData((current) => {
       if (key === "cash") {
         return {
-          ...nextData,
+          ...current,
           cash: normalizeCashRows(rows),
         };
       }
 
       return {
-        ...nextData,
+        ...current,
         [key]: normalizeFinancialRows(rows),
       };
     });
@@ -138,6 +143,7 @@ export function FpnaDashboard() {
   }
 
   const ready = data ? isReady(data) : false;
+  const uploadReady = isReady(pendingData);
 
   return (
     <main className="app-shell">
@@ -183,9 +189,9 @@ export function FpnaDashboard() {
                 status={status.cash}
                 onChange={(file) => handleFileUpload("cash", file)}
               />
-              <button className="sample-button" type="button" onClick={loadSampleData}>
+              <button className="load-button" disabled={!uploadReady || isParsing} type="button" onClick={loadUploadedData}>
                 {isParsing ? <Loader2 className="spin" size={16} /> : <FileSpreadsheet size={16} />}
-                Load sample data
+                Load Data
               </button>
             </div>
 
@@ -235,7 +241,7 @@ export function FpnaDashboard() {
                   {result?.title ?? "Analysis"}
                 </h2>
                 <p className="panel-note">
-                  {ready ? "Ask a question to generate an answer and chart." : "Load sample data or upload all required CSVs."}
+                  {ready ? "Ask a question to generate an answer and chart." : "Upload all required CSVs, then press Load Data."}
                 </p>
               </div>
               <div className="panel-body">
