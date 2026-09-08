@@ -5,14 +5,11 @@ import {
   BadgeDollarSign,
   BarChart3,
   CheckCircle2,
-  Database,
   FileSpreadsheet,
   LineChart,
   Loader2,
   PieChart,
   Send,
-  ShieldCheck,
-  Sparkles,
   Upload,
   WalletCards,
 } from "lucide-react";
@@ -48,13 +45,6 @@ import {
 } from "@/lib/finance";
 import { sampleActualsCsv, sampleBudgetCsv, sampleCashCsv } from "@/lib/sample-data";
 
-const exampleQuestions = [
-  "What was June 2025 revenue vs budget?",
-  "Show gross margin trend for the last 3 months",
-  "Break down opex by category for June",
-  "What is our current cash runway?",
-];
-
 const chartColors = ["#126c6a", "#b84a62", "#c2892f", "#537188", "#7d5a50"];
 
 type FileKey = "actuals" | "budget" | "cash";
@@ -69,7 +59,7 @@ const emptyStatus: UploadStatus = {
 
 export function FpnaDashboard() {
   const [data, setData] = useState<DataSet | null>(null);
-  const [query, setQuery] = useState("What was June 2025 revenue vs budget?");
+  const [query, setQuery] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [status, setStatus] = useState<UploadStatus>(emptyStatus);
   const [isParsing, setIsParsing] = useState(false);
@@ -158,22 +148,7 @@ export function FpnaDashboard() {
           </span>
           <div className="brand-copy">
             <p className="brand-title">FP&A Copilot</p>
-            <p className="brand-subtitle">Vercel-ready, no paid services required</p>
           </div>
-        </div>
-        <div className="status-strip" aria-label="Project status">
-          <span className="status-pill">
-            <ShieldCheck size={14} />
-            Vercel Hobby
-          </span>
-          <span className="status-pill">
-            <Database size={14} />
-            Browser memory
-          </span>
-          <span className="status-pill">
-            <Sparkles size={14} />
-            No API key
-          </span>
         </div>
       </header>
 
@@ -214,33 +189,11 @@ export function FpnaDashboard() {
               </button>
             </div>
 
-            <div className="chip-grid" aria-label="Example finance questions">
-              {exampleQuestions.map((question) => (
-                <button
-                  className="chip-button"
-                  disabled={!ready}
-                  key={question}
-                  onClick={() => askQuestion(question)}
-                  type="button"
-                >
-                  {question}
-                </button>
-              ))}
-            </div>
           </div>
         </aside>
 
         <section className="workspace">
-          <div className="hero-band">
-            <div className="hero-content">
-              <p className="hero-kicker">Financial Planning Analysis</p>
-              <h1 className="hero-title">Board-ready finance answers from CSV data.</h1>
-              <p className="hero-copy">
-                A production-style Vercel rebuild of your Streamlit app using Next.js, TypeScript,
-                browser-side analysis, and interactive charts.
-              </p>
-            </div>
-          </div>
+          <div className="hero-band" aria-label="Finance analytics workspace" />
 
           <section className="panel">
             <div className="panel-body">
@@ -323,15 +276,15 @@ export function FpnaDashboard() {
                   <ul className="insight-list">
                     <li>
                       <CheckCircle2 size={15} />
-                      <span>Core app runs without paid AI calls.</span>
+                      <span>Upload actuals, budget, and cash files.</span>
                     </li>
                     <li>
                       <CheckCircle2 size={15} />
-                      <span>Data is analyzed in browser memory.</span>
+                      <span>Ask about revenue, margin, opex, or runway.</span>
                     </li>
                     <li>
                       <CheckCircle2 size={15} />
-                      <span>Ready for Vercel Hobby deployment.</span>
+                      <span>Review the answer, chart, and detail table.</span>
                     </li>
                   </ul>
                 )}

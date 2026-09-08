@@ -88,33 +88,6 @@ button {
   margin: 0;
 }
 
-.brand-subtitle {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.4;
-  margin: 3px 0 0;
-}
-
-.status-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.status-pill {
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--muted);
-  display: inline-flex;
-  font-size: 12px;
-  gap: 6px;
-  min-height: 30px;
-  padding: 6px 10px;
-  white-space: nowrap;
-}
-
 .main-grid {
   display: grid;
   gap: 24px;
@@ -185,8 +158,7 @@ button {
 }
 
 .sample-button,
-.ask-button,
-.chip-button {
+.ask-button {
   align-items: center;
   border: 1px solid transparent;
   border-radius: 7px;
@@ -218,21 +190,6 @@ button {
   opacity: 0.45;
 }
 
-.chip-grid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr;
-  margin-top: 14px;
-}
-
-.chip-button {
-  background: transparent;
-  border-color: var(--border);
-  color: var(--foreground);
-  min-height: 38px;
-  padding: 8px 10px;
-}
-
 .workspace {
   display: grid;
   gap: 18px;
@@ -243,7 +200,7 @@ button {
   align-items: end;
   background:
     linear-gradient(90deg, rgba(23, 32, 42, 0.86), rgba(23, 32, 42, 0.24)),
-    url("/page.JPG");
+    url("/finance-hero.png");
   background-position: center;
   background-size: cover;
   border-radius: 8px;
@@ -252,32 +209,6 @@ button {
   min-height: 260px;
   overflow: hidden;
   padding: clamp(20px, 4vw, 34px);
-}
-
-.hero-content {
-  max-width: 720px;
-}
-
-.hero-kicker {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0;
-  margin: 0 0 10px;
-  text-transform: uppercase;
-}
-
-.hero-title {
-  font-size: clamp(32px, 5vw, 58px);
-  line-height: 1;
-  margin: 0;
-}
-
-.hero-copy {
-  color: rgba(255, 255, 255, 0.86);
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 14px 0 0;
-  max-width: 620px;
 }
 
 .question-bar {
@@ -431,12 +362,7 @@ th {
 
 @media (max-width: 680px) {
   .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .status-strip {
-    justify-content: flex-start;
+    align-items: center;
   }
 
   .question-bar,
