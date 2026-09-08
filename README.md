@@ -3,116 +3,158 @@ An AI-powered Financial Planning & Analysis (FP&A) assistant designed to help CF
 
 This project combines full-stack development, data analytics, AI agents, and financial reporting into an interactive Streamlit application capable of transforming raw CSV financial data into board-ready insights and visualizations.
 
-Built using **LangGraph, LangChain, LlamaIndex, Hugging Face, FAISS, and Streamlit**.
+## Live Demo
 
----
+Production app:
 
-##  Features
-
-*  Ask finance questions in plain English
-*  Automatic calculation of key FP&A metrics
-*  Interactive charts (Plotly)
-*  Agent-based workflow (LangGraph)
-*  Works directly on structured CSV financial data
-
----
-
-##  Supported Questions
-
-Examples:
-
-* “What was June 2025 revenue vs budget in USD?”
-* “Show gross margin trend for the last 3 months.”
-* “Break down Opex by category for June.”
-* “What is our current cash runway?”
-
----
-
-## 🎥 Demo
-
-https://financial-planning-analysis-copilot-6wp5ttqdoqnknepuwttszg.streamlit.app/
-
-##  Upload Your Data
-Upload the required CSV files to begin using the FP&A Copilot:
-
-* `actuals.csv`- This file contains real financial results.
-* `budget.csv` - This file contains forecasted or planned numbers.
-* `fx.csv`- This file contains conversion rates between currencies.
-* `cash.csv`- This file tracks how much cash the company has over time.
-
-Once all files are uploaded, you can start asking financial questions in natural language.
-
----
-
-##  Project Structure
-
-```
-fpna-agent/
-│
-├── app.py                  # Streamlit UI
-├── agent/
-│   ├── graph.py           # LangGraph workflow
-│   ├── tools.py           # Financial tools
-│   ├── llm.py             # HuggingFace LLM
-│
-├── data/
-│   ├── actuals.csv
-│   ├── budget.csv
-│   ├── fx.csv
-│   ├── cash.csv
-│   ├── loader.py
-│
-├── utils/
-│   ├── metrics.py
-│   ├── charts.py
-│
-├── index/
-│   ├── vector_store.py    # FAISS + LlamaIndex
-│
-├── tests/
-│   └── test_metrics.py
-│
-├── requirements.txt
-└── README.md
+```text
+https://financial-planning-analysis-copilot.vercel.app
 ```
 
----
+## Current Version
 
-##  Setup Instructions
+The deployed version is a Vercel-ready rebuild of the original FP&A assistant. It uses a Next.js interface, browser-side CSV parsing, deterministic finance calculations, and interactive charts.
 
-### 1. Clone repo
+This version is designed to stay free for a student project:
+
+- No paid AI API key required
+- No paid database required
+- No file storage service required
+- Uploaded CSV files stay in browser memory
+- Deploys on the Vercel Hobby plan
+
+## Features
+
+- Upload financial CSV files
+- Ask finance questions in plain English
+- Calculate revenue vs budget
+- Analyze gross margin trends
+- Break down operating expenses
+- Estimate cash runway
+- Display charts and detail tables
+- Run as a production-style Next.js app on Vercel
+
+## Supported Questions
+
+Example questions the app can handle:
+
+- What was June 2025 revenue vs budget?
+- Show gross margin trend for the last 3 months.
+- Break down opex by category for June.
+- What is our current cash runway?
+
+## CSV Files
+
+The app expects these files:
+
+| File | Purpose |
+| --- | --- |
+| `actuals.csv` | Actual monthly financial results |
+| `budget.csv` | Budget or forecast values |
+| `cash.csv` | Cash balance and net burn data |
+
+The original Python prototype also includes `fx.csv` for currency conversion experiments.
+
+## Tech Stack
+
+### Deployed Vercel App
+
+- Next.js
+- TypeScript
+- React
+- Recharts
+- PapaParse
+- Zod
+- Lucide React
+- Vercel
+
+### Original Python Prototype
+
+- Python
+- Streamlit
+- Pandas
+- NumPy
+- Plotly
+- LangGraph
+- LangChain
+- Hugging Face Transformers
+- FAISS
+- LlamaIndex
+- Pytest
+
+## Project Structure
+
+```text
+financial-planning-analysis-copilot/
+  app/
+    page.tsx
+    layout.tsx
+    globals.css
+  components/
+    fpna-dashboard.tsx
+  lib/
+    finance.ts
+    sample-data.ts
+  public/
+    finance-hero.png
+  agent/
+    graph.py
+    llm.py
+    tools.py
+  data/
+    loader.py
+  utils/
+    metrics.py
+    charts.py
+  tests/
+    test_metrics.py
+  app.py
+  package.json
+  requirements.txt
+```
+
+## Run Locally
+
+Install dependencies:
 
 ```bash
-git clone https://github.com/ravenfire24/financial-planning-analysis-copilot.git
-cd financial-planning-analysis-copilot
+npm install
 ```
 
-### 2. Install dependencies
+Start the development server:
 
 ```bash
-pip install -r requirements.txt
+npm run dev
 ```
 
-### 3. Run the app
+Open:
+
+```text
+http://localhost:3000
+```
+
+## Quality Checks
 
 ```bash
-python -m streamlit run app.py
-
+npm run lint
+npm run typecheck
+npm run build
 ```
----
-## 🔧 Tech Stack
 
-* **Frontend:** Streamlit
-* **LLM:** Hugging Face (Mistral / LLaMA compatible)
-* **Agent Framework:** LangGraph
-* **Tooling:** LangChain
-* **Data Layer:** Pandas
-* **Vector Store:** FAISS
-* **Indexing:** LlamaIndex
-* **Visualization:** Plotly
+## Deployment
 
- ![alt text](https://github.com/ravenfire24/financial-planning-analysis-copilot/blob/main/page.JPG)
+The app is deployed on Vercel:
 
+```text
+https://financial-planning-analysis-copilot.vercel.app
+```
 
+To deploy from the command line:
 
+```bash
+npx vercel deploy --prod
+```
 
+## Notes
+
+This project keeps the cost low by avoiding paid backend services in the deployed version. The finance analysis runs in the browser, which makes the app easier to deploy, easier to demo, and suitable for a personal student portfolio.
