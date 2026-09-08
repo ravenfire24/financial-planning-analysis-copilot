@@ -1,0 +1,513 @@
+"use client";
+
+import {
+  Activity,
+  BadgeDollarSign,
+  BarChart3,
+  CheckCircle2,
+  Database,
+  FileSpreadsheet,
+  LineChart,
+  Loader2,
+  PieChart,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+  WalletCards,
+} from "lucide-react";
+import Papa from "papaparse";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart as RechartsLineChart,
+  Pie,
+  PieChart as RechartsPieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { useMemo, useState } from "react";
+import {
+  AnalysisResult,
+  DataSet,
+  analyzeQuestion,
+  buildSummary,
+  cashRunway,
+  formatCurrency,
+  getLatestMonth,
+  grossMargin,
+  normalizeCashRows,
+  normalizeFinancialRows,
+  totalOpex,
+  totalRevenue,
+} from "@/lib/finance";
+import { sampleActualsCsv, sampleBudgetCsv, sampleCashCsv } from "@/lib/sample-data";
+
+const exampleQuestions = [
+  "What was June 2025 revenue vs budget?",
+  "Show gross margin trend for the last 3 months",
+  "Break down opex by category for June",
+  "What is our current cash runway?",
+];
+
+const chartColors = ["#126c6a", "#b84a62", "#c2892f", "#537188", "#7d5a50"];
+
+type FileKey = "actuals" | "budget" | "cash";
+
+type UploadStatus = Record<FileKey, string>;
+
+const emptyStatus: UploadStatus = {
+  actuals: "",
+  budget: "",
+  cash: "",
+};
+
+export function FpnaDashboard() {
+  const [data, setData] = useState<DataSet | null>(null);
+  const [query, setQuery] = useState("What was June 2025 revenue vs budget?");
+  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [status, setStatus] = useState<UploadStatus>(emptyStatus);
+  const [isParsing, setIsParsing] = useState(false);
+
+  const summary = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+
+    const latestMonth = getLatestMonth(data.actuals);
+    return {
+      latestMonth,
+      revenue: totalRevenue(data.actuals),
+      opex: totalOpex(data.actuals),
+      margin: grossMargin(data.actuals, latestMonth),
+      runway: cashRunway(data.cash),
+    };
+  }, [data]);
+
+  function loadSampleData() {
+    const nextData = {
+      actuals: normalizeFinancialRows(parseCsv(sampleActualsCsv)),
+      budget: normalizeFinancialRows(parseCsv(sampleBudgetCsv)),
+      cash: normalizeCashRows(parseCsv(sampleCashCsv)),
+    };
+
+    setData(nextData);
+    setResult(buildSummary(nextData));
+    setStatus({
+      actuals: "Sample loaded",
+      budget: "Sample loaded",
+      cash: "Sample loaded",
+    });
+  }
+
+  async function handleFileUpload(key: FileKey, file: File | null) {
+    if (!file) {
+      return;
+    }
+
+    setIsParsing(true);
+    const text = await file.text();
+    const rows = parseCsv(text);
+
+    setData((current) => {
+      const nextData = current ?? { actuals: [], budget: [], cash: [] };
+
+      if (key === "cash") {
+        return {
+          ...nextData,
+          cash: normalizeCashRows(rows),
+        };
+      }
+
+      return {
+        ...nextData,
+        [key]: normalizeFinancialRows(rows),
+      };
+    });
+
+    setStatus((current) => ({
+      ...current,
+      [key]: `${file.name}`,
+    }));
+    setResult(null);
+    setIsParsing(false);
+  }
+
+  function askQuestion(nextQuery = query) {
+    if (!data || !isReady(data)) {
+      return;
+    }
+
+    setQuery(nextQuery);
+    setResult(analyzeQuestion(nextQuery, data));
+  }
+
+  const ready = data ? isReady(data) : false;
+
+  return (
+    <main className="app-shell">
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand-mark" title="FP&A Copilot">
+            <BarChart3 size={20} />
+          </span>
+          <div className="brand-copy">
+            <p className="brand-title">FP&A Copilot</p>
+            <p className="brand-subtitle">Vercel-ready, no paid services required</p>
+          </div>
+        </div>
+        <div className="status-strip" aria-label="Project status">
+          <span className="status-pill">
+            <ShieldCheck size={14} />
+            Vercel Hobby
+          </span>
+          <span className="status-pill">
+            <Database size={14} />
+            Browser memory
+          </span>
+          <span className="status-pill">
+            <Sparkles size={14} />
+            No API key
+          </span>
+        </div>
+      </header>
+
+      <div className="main-grid">
+        <aside className="panel">
+          <div className="panel-header">
+            <h2 className="panel-title">
+              <Upload size={17} />
+              Financial Data
+            </h2>
+            <p className="panel-note">
+              Upload CSVs or use the built-in sample data. Files stay in the browser for the free version.
+            </p>
+          </div>
+          <div className="panel-body">
+            <div className="upload-stack">
+              <FileUpload
+                id="actuals"
+                label="Actuals CSV"
+                status={status.actuals}
+                onChange={(file) => handleFileUpload("actuals", file)}
+              />
+              <FileUpload
+                id="budget"
+                label="Budget CSV"
+                status={status.budget}
+                onChange={(file) => handleFileUpload("budget", file)}
+              />
+              <FileUpload
+                id="cash"
+                label="Cash CSV"
+                status={status.cash}
+                onChange={(file) => handleFileUpload("cash", file)}
+              />
+              <button className="sample-button" type="button" onClick={loadSampleData}>
+                {isParsing ? <Loader2 className="spin" size={16} /> : <FileSpreadsheet size={16} />}
+                Load sample data
+              </button>
+            </div>
+
+            <div className="chip-grid" aria-label="Example finance questions">
+              {exampleQuestions.map((question) => (
+                <button
+                  className="chip-button"
+                  disabled={!ready}
+                  key={question}
+                  onClick={() => askQuestion(question)}
+                  type="button"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <section className="workspace">
+          <div className="hero-band">
+            <div className="hero-content">
+              <p className="hero-kicker">Financial Planning Analysis</p>
+              <h1 className="hero-title">Board-ready finance answers from CSV data.</h1>
+              <p className="hero-copy">
+                A production-style Vercel rebuild of your Streamlit app using Next.js, TypeScript,
+                browser-side analysis, and interactive charts.
+              </p>
+            </div>
+          </div>
+
+          <section className="panel">
+            <div className="panel-body">
+              <div className="question-bar">
+                <input
+                  aria-label="Finance question"
+                  className="question-input"
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      askQuestion();
+                    }
+                  }}
+                  placeholder="Ask about revenue, margin, opex, or cash runway"
+                  value={query}
+                />
+                <button className="ask-button" disabled={!ready || query.trim().length === 0} onClick={() => askQuestion()} type="button">
+                  <Send size={16} />
+                  Analyze
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {summary ? (
+            <section className="metric-grid" aria-label="Finance metrics">
+              <MetricCard icon={<BadgeDollarSign size={16} />} label="Total Revenue" sub="Uploaded actuals" value={formatCurrency(summary.revenue)} />
+              <MetricCard icon={<Activity size={16} />} label="Latest Margin" sub={summary.latestMonth} value={`${(summary.margin * 100).toFixed(1)}%`} />
+              <MetricCard icon={<PieChart size={16} />} label="Total Opex" sub="Uploaded actuals" value={formatCurrency(summary.opex)} />
+              <MetricCard icon={<WalletCards size={16} />} label="Cash Runway" sub="Trailing burn" value={`${summary.runway.toFixed(1)} mo`} />
+            </section>
+          ) : null}
+
+          <section className="result-grid">
+            <div className="panel">
+              <div className="panel-header">
+                <h2 className="panel-title">
+                  <LineChart size={17} />
+                  {result?.title ?? "Analysis"}
+                </h2>
+                <p className="panel-note">
+                  {ready ? "Ask a question to generate an answer and chart." : "Load sample data or upload all required CSVs."}
+                </p>
+              </div>
+              <div className="panel-body">
+                {result ? (
+                  <>
+                    <p className="answer-text">{result.answer}</p>
+                    <div className="chart-wrap">
+                      <ResultChart result={result} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="empty-state">
+                    <FileSpreadsheet size={34} />
+                    <span>Waiting for financial data</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="panel">
+              <div className="panel-header">
+                <h2 className="panel-title">
+                  <CheckCircle2 size={17} />
+                  Insights
+                </h2>
+              </div>
+              <div className="panel-body">
+                {result ? (
+                  <ul className="insight-list">
+                    {result.highlights.map((highlight) => (
+                      <li key={highlight}>
+                        <CheckCircle2 size={15} />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul className="insight-list">
+                    <li>
+                      <CheckCircle2 size={15} />
+                      <span>Core app runs without paid AI calls.</span>
+                    </li>
+                    <li>
+                      <CheckCircle2 size={15} />
+                      <span>Data is analyzed in browser memory.</span>
+                    </li>
+                    <li>
+                      <CheckCircle2 size={15} />
+                      <span>Ready for Vercel Hobby deployment.</span>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {result?.tableRows.length ? (
+            <section className="panel">
+              <div className="panel-header">
+                <h2 className="panel-title">
+                  <FileSpreadsheet size={17} />
+                  Detail Table
+                </h2>
+              </div>
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      {Object.keys(result.tableRows[0]).map((key) => (
+                        <th key={key}>{toTitle(key)}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.tableRows.map((row, index) => (
+                      <tr key={`${result.kind}-${index}`}>
+                        {Object.values(row).map((value, cellIndex) => (
+                          <td key={`${result.kind}-${index}-${cellIndex}`}>{formatCell(value)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
+        </section>
+      </div>
+    </main>
+  );
+}
+
+function FileUpload({
+  id,
+  label,
+  onChange,
+  status,
+}: {
+  id: string;
+  label: string;
+  onChange: (file: File | null) => void;
+  status: string;
+}) {
+  return (
+    <label className="file-row" htmlFor={id}>
+      <span className="file-label">
+        <span>{label}</span>
+        {status ? <CheckCircle2 className="positive" size={15} /> : null}
+      </span>
+      <input
+        accept=".csv,text/csv"
+        className="file-input"
+        id={id}
+        onChange={(event) => onChange(event.target.files?.[0] ?? null)}
+        type="file"
+      />
+      {status ? <span className="panel-note">{status}</span> : null}
+    </label>
+  );
+}
+
+function MetricCard({
+  icon,
+  label,
+  sub,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  sub: string;
+  value: string;
+}) {
+  return (
+    <div className="metric-card">
+      <p className="metric-label">
+        {icon}
+        {label}
+      </p>
+      <p className="metric-value">{value}</p>
+      <p className="metric-sub">{sub}</p>
+    </div>
+  );
+}
+
+function ResultChart({ result }: { result: AnalysisResult }) {
+  if (result.chartType === "none" || result.chartData.length === 0) {
+    return (
+      <div className="empty-state">
+        <BarChart3 size={30} />
+        <span>No chart data available</span>
+      </div>
+    );
+  }
+
+  if (result.chartType === "pie") {
+    return (
+      <ResponsiveContainer height="100%" width="100%">
+        <RechartsPieChart>
+          <Pie data={result.chartData} dataKey="value" innerRadius={58} nameKey="name" outerRadius={104} paddingAngle={2}>
+            {result.chartData.map((entry, index) => (
+              <Cell fill={chartColors[index % chartColors.length]} key={entry.name} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+        </RechartsPieChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  if (result.chartType === "line") {
+    return (
+      <ResponsiveContainer height="100%" width="100%">
+        <RechartsLineChart data={result.chartData} margin={{ bottom: 12, left: 12, right: 20, top: 24 }}>
+          <CartesianGrid stroke="#d8e0ea" strokeDasharray="4 4" />
+          <XAxis dataKey="name" tickLine={false} />
+          <YAxis tickLine={false} />
+          <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+          <Line dataKey="value" dot={{ r: 4 }} stroke="#126c6a" strokeWidth={3} type="monotone" />
+        </RechartsLineChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  return (
+    <ResponsiveContainer height="100%" width="100%">
+      <BarChart data={result.chartData} margin={{ bottom: 12, left: 12, right: 20, top: 24 }}>
+        <CartesianGrid stroke="#d8e0ea" strokeDasharray="4 4" vertical={false} />
+        <XAxis dataKey="name" tickLine={false} />
+        <YAxis tickLine={false} />
+        <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+        <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+          {result.chartData.map((entry, index) => (
+            <Cell fill={chartColors[index % chartColors.length]} key={entry.name} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function parseCsv(csv: string): unknown[] {
+  const parsed = Papa.parse<Record<string, unknown>>(csv, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (header) => header.trim(),
+  });
+
+  return parsed.data;
+}
+
+function isReady(data: DataSet): boolean {
+  return data.actuals.length > 0 && data.budget.length > 0 && data.cash.length > 0;
+}
+
+function toTitle(value: string): string {
+  return value
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (character) => character.toUpperCase())
+    .trim();
+}
+
+function formatCell(value: string | number): string {
+  if (typeof value === "number") {
+    return Math.abs(value) >= 1000 ? formatCurrency(value) : value.toString();
+  }
+
+  return value;
+}

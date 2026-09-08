@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Next.js / Vercel
+!lib/
+!lib/**
+.next/
+node_modules/
+.npm-cache/
+tsconfig.tsbuildinfo
