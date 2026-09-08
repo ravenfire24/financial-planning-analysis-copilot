@@ -88,17 +88,6 @@ financial-planning-analysis-copilot/
   requirements.txt
 ```
 
-## Key Files
-
-| File | Purpose |
-| --- | --- |
-| `components/fpna-dashboard.tsx` | Main interactive dashboard UI |
-| `lib/finance.ts` | Finance routing, calculations, formatting, and validation |
-| `lib/sample-data.ts` | Demo CSV data used by the app |
-| `app/globals.css` | App styling and responsive layout |
-| `public/finance-hero.png` | Homepage background image |
-| `package.json` | Next.js scripts and dependencies |
-
 ## Run Locally
 
 Install dependencies:
