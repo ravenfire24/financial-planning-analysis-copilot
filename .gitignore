@@ -224,3 +224,5 @@ __marimo__/
 node_modules/
 .npm-cache/
 tsconfig.tsbuildinfo
+
+.vercel
